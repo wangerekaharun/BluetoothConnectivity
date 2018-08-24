@@ -4,15 +4,11 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.os.IBinder;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,17 +17,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import ke.co.appslab.bluetoothconnectivity.HomeActivity;
 import ke.co.appslab.bluetoothconnectivity.R;
 import ke.co.appslab.bluetoothconnectivity.bluetooth.BluetoothService;
-import ke.co.appslab.bluetoothconnectivity.services.Bluetooth;
-
-import static ke.co.appslab.bluetoothconnectivity.utils.SharedPref.PREF_NAME;
 
 public class DevicesListActivity extends AppCompatActivity {
     private static final String TAG = "DeviceListActivity";
@@ -51,7 +42,7 @@ public class DevicesListActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         bluetoothAdapter= BluetoothAdapter.getDefaultAdapter();
-        //request bluetooth permissions
+        //request bluetoothConnectivity permissions
         if (!bluetoothAdapter.isEnabled()){
             Intent enableBluetoothIntent= new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBluetoothIntent,REQUEST_ENABLE_BT);
@@ -66,8 +57,8 @@ public class DevicesListActivity extends AppCompatActivity {
         });
 
         ArrayAdapter<String> pairedDevicesArrayAdapter =
-                new ArrayAdapter<String>(this, R.layout.device_name);
-        mNewDevicesArrayAdapter = new ArrayAdapter<String>(this, R.layout.device_name);
+                new ArrayAdapter<>(this, R.layout.device_name);
+        mNewDevicesArrayAdapter = new ArrayAdapter<>(this, R.layout.device_name);
 
         // Find and set up the ListView for paired devices
         ListView pairedListView = findViewById(R.id.paired_devices);
@@ -87,7 +78,7 @@ public class DevicesListActivity extends AppCompatActivity {
         filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         this.registerReceiver(mReceiver, filter);
 
-        // Get the local Bluetooth adapter
+        // Get the local BluetoothConnectivity adapter
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         // Get a set of currently paired devices
@@ -144,11 +135,10 @@ public class DevicesListActivity extends AppCompatActivity {
             String address = info.substring(info.length() - 17);
 
             // Create the result Intent and include the MAC address
-            Intent intent = new Intent(DevicesListActivity.this,HomeActivity.class);
-            startActivity(intent);
-           // intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
+            Intent intent = new Intent();
+            intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
             // Set result and finish this Activity
-            //setResult(Activity.RESULT_OK, intent);
+            setResult(Activity.RESULT_OK, intent);
 
             finish();
         }
@@ -161,7 +151,6 @@ public class DevicesListActivity extends AppCompatActivity {
         bluetoothService.connect(device, true);
 
     }
-
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

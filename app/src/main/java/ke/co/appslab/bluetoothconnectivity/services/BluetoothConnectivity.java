@@ -15,8 +15,8 @@ import java.util.Set;
 import ke.co.appslab.bluetoothconnectivity.bluetooth.BluetoothConstants;
 import ke.co.appslab.bluetoothconnectivity.bluetooth.BluetoothService;
 
-public class Bluetooth extends Service {
-    private static final String TAG = "Bluetooth";
+public class BluetoothConnectivity extends Service {
+    private static final String TAG = "BluetoothConnectivity";
     private BluetoothAdapter bluetoothAdapter = null;
     private BluetoothService bluetoothService = null;
     String deviceAddress;
@@ -39,7 +39,7 @@ public class Bluetooth extends Service {
         if (bluetoothService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
             if (bluetoothService.getState() == BluetoothService.STATE_NONE) {
-                // Start the Bluetooth chat services
+                // Start the BluetoothConnectivity chat services
                 bluetoothService.start();
             }
         }
@@ -52,13 +52,14 @@ public class Bluetooth extends Service {
     }
 
     public class LocalBinder extends Binder {
-        public Bluetooth getServerInstance() {
-            return Bluetooth.this;
+        public BluetoothConnectivity getServerInstance() {
+            return BluetoothConnectivity.this;
         }
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        //start a connection
          connect();
         return START_STICKY;// Keeps the service running
     }
@@ -66,9 +67,11 @@ public class Bluetooth extends Service {
     private void connect() {
         // Get the BluetoothDevice object
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
-        // Attempt to connect to the device
-        bluetoothService.connect(device, true);
+        if (deviceAddress != null){
+            BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
+            // Attempt to connect to the device
+            bluetoothService.connect(device, false);
+        }
     }
     @Override
     public void onDestroy() {
@@ -104,12 +107,12 @@ public class Bluetooth extends Service {
                 case BluetoothConstants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
-                    String transactionCost = new String(readBuf, 0, msg.arg1);
+                    String readMessage = new String(readBuf, 0, msg.arg1);
 
                     break;
                 case BluetoothConstants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
-                    String mConnectedDeviceName = msg.getData().getString(BluetoothConstants.DEVICE_NAME);
+                    String connectedDeviceName = msg.getData().getString(BluetoothConstants.DEVICE_NAME);
                     break;
                 case BluetoothConstants.MESSAGE_TOAST:
                     Log.d(TAG, msg.getData().getString(BluetoothConstants.TOAST));

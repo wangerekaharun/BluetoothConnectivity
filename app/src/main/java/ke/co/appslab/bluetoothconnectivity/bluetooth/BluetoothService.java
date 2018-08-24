@@ -140,7 +140,7 @@ public class BluetoothService  {
     }
 
     /**
-     * Start the ConnectedThread to begin managing a Bluetooth connection
+     * Start the ConnectedThread to begin managing a BluetoothConnectivity connection
      *
      * @param socket The BluetoothSocket on which the connection was made
      * @param device The BluetoothDevice that has been connected

@@ -14,13 +14,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import ke.co.appslab.bluetoothconnectivity.services.Bluetooth;
+import ke.co.appslab.bluetoothconnectivity.services.BluetoothConnectivity;
 import ke.co.appslab.bluetoothconnectivity.views.DevicesListActivity;
 
 public class HomeActivity extends AppCompatActivity {
-    public Bluetooth bluetooth;
+    public BluetoothConnectivity bluetoothConnectivity;
     boolean mBounded;
     int REQUEST_ACCESS_COARSE_LOCATION = 1;
+    private static final String TAG = "BluetoothActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,10 +33,10 @@ public class HomeActivity extends AppCompatActivity {
         //request location permission
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_ACCESS_COARSE_LOCATION);
 
-        Intent mIntent = new Intent(this, Bluetooth.class);
+        //bind bluetooth connectivity service to this activity
+        Intent mIntent = new Intent(this, BluetoothConnectivity.class);
         startService(mIntent);
         bindService(mIntent, mConnection, BIND_AUTO_CREATE);
-
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -47,13 +48,13 @@ public class HomeActivity extends AppCompatActivity {
 
         public void onServiceDisconnected(ComponentName name) {
             mBounded = false;
-            bluetooth = null;
+            bluetoothConnectivity = null;
         }
 
         public void onServiceConnected(ComponentName name, IBinder service) {
             mBounded = true;
-            Bluetooth.LocalBinder mLocalBinder = (Bluetooth.LocalBinder)service;
-            bluetooth = mLocalBinder.getServerInstance();
+            BluetoothConnectivity.LocalBinder mLocalBinder = (BluetoothConnectivity.LocalBinder)service;
+            bluetoothConnectivity = mLocalBinder.getServerInstance();
 
         }
     };
@@ -74,8 +75,10 @@ public class HomeActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            //view a list of paired devices
             Intent devicesListIntent = new Intent(this, DevicesListActivity.class);
             startActivity(devicesListIntent);
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -84,6 +87,18 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+    }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
 
+    }
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if(mBounded) {
+            unbindService(mConnection);
+            mBounded = false;
+        }
     }
 }

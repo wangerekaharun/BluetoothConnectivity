@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:name=".utils.BluetoothConnectivity"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -25,11 +24,7 @@
             </intent-filter>
         </activity>
 
-        <receiver
-            android:name=".receivers.BluetoothReceiver"
-            android:enabled="true" />
-
-        <service android:name=".services.Bluetooth" />
+        <service android:name=".services.BluetoothConnectivity" />
 
         <activity android:name=".views.DevicesListActivity">
             <intent-filter>
