@@ -4,7 +4,7 @@
     tools:context="ke.co.appslab.bluetoothconnectivity.HomeActivity">
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="100"
+        android:icon="@drawable/ic_bluetooth_black_24dp"
         android:title="@string/action_settings"
-        app:showAsAction="never" />
+        app:showAsAction="always" />
 </menu>

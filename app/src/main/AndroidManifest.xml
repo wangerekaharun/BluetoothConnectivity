@@ -26,7 +26,8 @@
 
         <service android:name=".services.BluetoothConnectivity" />
 
-        <activity android:name=".views.DevicesListActivity">
+        <activity android:name=".views.DevicesListActivity"
+            android:parentActivityName=".HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
