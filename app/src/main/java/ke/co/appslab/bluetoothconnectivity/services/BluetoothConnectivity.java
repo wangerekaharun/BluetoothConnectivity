@@ -79,6 +79,10 @@ public class BluetoothConnectivity extends Service {
             bluetoothService.stop();
         }
     }
+    public void printInfo(String printInfo){
+        byte[] toPrint = (byte[]) printInfo.getBytes(); // for test purposes
+        bluetoothService.write(toPrint);
+    }
     private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {

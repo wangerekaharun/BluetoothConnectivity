@@ -40,8 +40,17 @@ public class HomeActivity extends AppCompatActivity {
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+        fab.setOnClickListener(view -> {
+            //test print
+            //make sure mBounded = true as this means the service is already bounded
+            if (mBounded){
+                String printInfo = "test";
+                //call print method from bluetooth connectivity service
+                bluetoothConnectivity.printInfo(printInfo);
+            }
+            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    .setAction("Action", null).show();
+        });
     }
 
     ServiceConnection mConnection = new ServiceConnection() {
@@ -55,6 +64,7 @@ public class HomeActivity extends AppCompatActivity {
             mBounded = true;
             BluetoothConnectivity.LocalBinder mLocalBinder = (BluetoothConnectivity.LocalBinder)service;
             bluetoothConnectivity = mLocalBinder.getServerInstance();
+
 
         }
     };
