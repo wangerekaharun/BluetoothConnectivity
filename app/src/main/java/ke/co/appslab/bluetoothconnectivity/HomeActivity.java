@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import ke.co.appslab.bluetoothconnectivity.services.BluetoothConnectivity;
+import ke.co.appslab.bluetoothconnectivity.services.BluetoothForegroundService;
+import ke.co.appslab.bluetoothconnectivity.utils.Constants;
 import ke.co.appslab.bluetoothconnectivity.views.DevicesListActivity;
 
 public class HomeActivity extends AppCompatActivity {
@@ -34,22 +36,26 @@ public class HomeActivity extends AppCompatActivity {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, REQUEST_ACCESS_COARSE_LOCATION);
 
         //bind bluetooth connectivity service to this activity
-        Intent mIntent = new Intent(this, BluetoothConnectivity.class);
-        startService(mIntent);
-        bindService(mIntent, mConnection, BIND_AUTO_CREATE);
+//        Intent mIntent = new Intent(this, BluetoothConnectivity.class);
+//        startService(mIntent);
+//        bindService(mIntent, mConnection, BIND_AUTO_CREATE);
 
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            //test print
-            //make sure mBounded = true as this means the service is already bounded
-            if (mBounded){
-                String printInfo = "test";
-                //call print method from bluetooth connectivity service
-                bluetoothConnectivity.printInfo(printInfo);
-            }
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
+            //start foreground service
+            Intent startForegroundIntent = new Intent(HomeActivity.this, BluetoothForegroundService.class);
+            startForegroundIntent.setAction(Constants.START_FOREGROUND_ACTION);
+            startService(startForegroundIntent);
+//            //test print
+//            //make sure mBounded = true as this means the service is already bounded
+//            if (mBounded){
+//                String printInfo = "test";
+//                //call print method from bluetooth connectivity service
+//                bluetoothConnectivity.printInfo(printInfo);
+//            }
+//            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                    .setAction("Action", null).show();
         });
     }
 

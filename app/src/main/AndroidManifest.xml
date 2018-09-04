@@ -25,6 +25,7 @@
         </activity>
 
         <service android:name=".services.BluetoothConnectivity" />
+        <service android:name=".services.BluetoothForegroundService"/>
 
         <activity android:name=".views.DevicesListActivity"
             android:parentActivityName=".HomeActivity">
